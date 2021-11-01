@@ -4,6 +4,7 @@ public class User {
     private String email;
     private String password;
     private String walletAd;
+    private boolean isLoggedIn = false;
     private int xp;
 
     public User(String Username, String Email, String Password, String WalletAd, int XP)
@@ -17,6 +18,16 @@ public class User {
 
     public boolean signIn(String user, String pass)
     {
-        return user.equals(username) && pass.equals(password);
+        if(user.equals(username) && pass.equals(password))
+        {
+            isLoggedIn = true;
+            return true;
+        }
+        return false;
+    }
+
+    public void signOut()
+    {
+        isLoggedIn = false;
     }
 }
