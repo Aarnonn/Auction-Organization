@@ -20,6 +20,8 @@ public class User {
         balance = Balance;
     }
 
+    public User() {}
+
     public boolean signIn(String user, String pass)
     {
         if(user.equals(username) && pass.equals(password))

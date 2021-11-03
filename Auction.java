@@ -9,8 +9,7 @@ public class Auction
     public Date endDate;
     public int startPrice;
     
-    public int highestBid = 0;
-    public ArrayList<Bid> arr = new ArrayList<Bid>();
+    public Bid highestBid = new Bid(new User(), 0);
     public int views = 0;
 
     public Auction(User Creator, String Title, Date StartDate, Date EndDate, int StartPrice)
@@ -24,16 +23,18 @@ public class Auction
 
     public void placeBid(User user, int price)
     {
-        if(!user.isLoggedIn || price <= highestBid || user.balance < price) 
+        if(!user.isLoggedIn || price <= highestBid.bidPrice || user.balance < price) 
         { 
             System.out.println("Unsuccessful Bid");
             return; 
         }
 
-        highestBid = price;
-        arr.add(new Bid(user, price));
+        highestBid.user.transfer(AuctionUser, highestBid.user, highestBid.bidPrice);
+        highestBid = new Bid(user, price);
         user.transfer(user, AuctionUser, price);
         user.xp += 10;
+
+
         //email method
         //loops through bidders and notifies them
 
@@ -42,13 +43,6 @@ public class Auction
 
     public void endAuction()
     {
-        for(int i = 0; i < arr.size()-1; i++)
-        {
-            Bid bid = arr.get(i);
-            bid.user.transfer(AuctionUser, bid.user, bid.bidPrice);
-        }
-        
-        Bid winningBid = arr.get(arr.size()-1);
-        creator.transfer(winningBid.user, creator, winningBid.bidPrice);
+        creator.transfer(AuctionUser, creator, highestBid.bidPrice);
     }
 }
