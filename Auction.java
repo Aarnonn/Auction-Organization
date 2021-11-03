@@ -48,6 +48,7 @@ public class Auction
             bid.user.transfer(AuctionUser, bid.user, bid.bidPrice);
         }
         
-        creator.transfer(arr.get(arr.size()).user, creator, arr.get(arr.size()).bidPrice);
+        Bid winningBid = arr.get(arr.size()-1);
+        creator.transfer(winningBid.user, creator, winningBid.bidPrice);
     }
 }
