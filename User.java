@@ -40,9 +40,9 @@ public class User {
         if(!isLoggedIn) { return "You must be logged in to create an auction"; }
 
         Random rand = new Random();
-        String str = Integer.toString(rand.nextInt(1)*10000);
+        String str = Integer.toString(rand.nextInt(10000));
 
-        db.auctions.put(str, new Auction(title, startDate, endDate, startPrice));
+        db.auctions.put(str, new Auction(User.this, title, startDate, endDate, startPrice));
         xp+=10;
         return str;
     }

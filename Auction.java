@@ -3,6 +3,7 @@ import java.util.*;
 public class Auction
 {
     public User AuctionUser = new User("auction", "", "", "", 0);
+    public User creator;
     public String title;
     public Date startDate;
     public Date endDate;
@@ -12,8 +13,9 @@ public class Auction
     public ArrayList<Bid> arr = new ArrayList<Bid>();
     public int views = 0;
 
-    public Auction(String Title, Date StartDate, Date EndDate, int StartPrice)
+    public Auction(User Creator, String Title, Date StartDate, Date EndDate, int StartPrice)
     {
+        creator = Creator;
         title = Title;
         startDate = StartDate;
         endDate = EndDate;
@@ -36,5 +38,16 @@ public class Auction
         //loops through bidders and notifies them
 
         System.out.println("Successful Bid");
+    }
+
+    public void endAuction()
+    {
+        for(int i = 0; i < arr.size()-1; i++)
+        {
+            Bid bid = arr.get(i);
+            bid.user.transfer(AuctionUser, bid.user, bid.bidPrice);
+        }
+        
+        creator.transfer(arr.get(arr.size()).user, creator, arr.get(arr.size()).bidPrice);
     }
 }

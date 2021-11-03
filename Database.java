@@ -10,7 +10,7 @@ public class Database
         User user = new User(Username, Email, Password, WalletAd, Balance);
 
         Random rand = new Random();
-        String str = Integer.toString(rand.nextInt(1)*10000);
+        String str = Integer.toString(rand.nextInt(10000));
 
         users.put(str, user);
         return str;
