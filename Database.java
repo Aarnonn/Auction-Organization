@@ -15,4 +15,12 @@ public class Database
         users.put(str, user);
         return str;
     }
+
+    public void displayAuctions()
+    {
+        for(int i = 0; i < auctions.size(); i++)
+        {
+            System.out.print(auctions.toString());
+        }
+    }
 }
