@@ -1,19 +1,23 @@
+import java.util.*;
+
 public class User {
 
-    private String username;
-    private String email;
-    private String password;
-    private String walletAd;
-    private boolean isLoggedIn = false;
-    private int xp;
+    public String username;
+    public String email;
+    public String password;
+    public String walletAd;
+    public int balance;
+    public boolean isLoggedIn = false;
+    
+    public int xp = 0;
 
-    public User(String Username, String Email, String Password, String WalletAd, int XP)
+    public User(String Username, String Email, String Password, String WalletAd, int Balance)
     {
         username = Username;
         email = Email;
         password = Password;
         walletAd = WalletAd;
-        xp = XP;
+        balance = Balance;
     }
 
     public boolean signIn(String user, String pass)
@@ -29,5 +33,23 @@ public class User {
     public void signOut()
     {
         isLoggedIn = false;
+    }
+
+    public String createAuction(String title, Date startDate, Date endDate, int startPrice, Database db)
+    {
+        if(!isLoggedIn) { return "You must be logged in to create an auction"; }
+
+        Random rand = new Random();
+        String str = Integer.toString(rand.nextInt(1)*10000);
+
+        db.auctions.put(str, new Auction(title, startDate, endDate, startPrice));
+        xp+=10;
+        return str;
+    }
+
+    public void transfer(User giver, User recip, int price)
+    {
+        giver.balance -= price;
+        recip.balance += price;
     }
 }

@@ -1,8 +1,14 @@
-import java.sql.Date;
+import java.util.*;
 
 public class Bid {
-    private String username;
-    private String walletAddress;
-    private Date bidDate;
-    private int bidPrice;
+    public User user;
+    public Date bidDate;
+    public int bidPrice;
+
+    public Bid(User User, int BidPrice)
+    {
+        user = User;
+        bidPrice = BidPrice;
+        //bidDate = current date and time
+    }
 }
