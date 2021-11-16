@@ -1,0 +1,49 @@
+// SPDX-License-Identifier: GPL-3.0
+
+pragma solidity >=0.8.9;
+import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
+
+contract Auction {
+    event Buy(address winner, uint amount);
+
+    ERC721 public immutable nft;
+    uint public immutable nftId;
+
+    address payable public seller;
+    uint public startingPrice;
+    uint public startAt;
+    uint public expiresAt;
+    uint public highestBid;
+    address public highestBidder;
+
+    constructor(
+        uint _startingPrice,
+        address _nft,
+        uint _nftId
+    ) {
+        seller = payable(msg.sender);
+        startingPrice = _startingPrice;
+        startAt = block.timestamp;
+        expiresAt = block.timestamp + 7 days;
+
+        nft = ERC721(_nft);
+        nftId = _nftId;
+    }
+    
+    function bid() public payable returns (bool)
+    { 
+        require(msg.value > highestBid, "can't bid, Make a higher Bid");
+        require(block.timestamp < expiresAt, "Auction has expired");
+        highestBidder = msg.sender; 
+        highestBid = msg.value;
+        return true;
+    }
+
+    function transferFrom() external payable {
+        require(msg.sender == highestBidder);
+        require(block.timestamp > expiresAt);
+        
+        nft.transferFrom(seller, msg.sender, nftId);
+        seller.transfer(msg.value);
+    }
+}
