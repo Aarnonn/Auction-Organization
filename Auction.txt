@@ -6,8 +6,8 @@ import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 contract Auction {
     event Buy(address winner, uint amount);
 
-    ERC721 public immutable nft;
-    uint public immutable nftId;
+    ERC721 public nft;
+    uint public nftId;
 
     address payable public seller;
     uint public startingPrice;
@@ -16,34 +16,38 @@ contract Auction {
     uint public highestBid;
     address public highestBidder;
 
-    constructor(
-        uint _startingPrice,
-        address _nft,
-        uint _nftId
-    ) {
+    constructor(uint _startingPrice) {
         seller = payable(msg.sender);
         startingPrice = _startingPrice;
         startAt = block.timestamp;
         expiresAt = block.timestamp + 7 days;
-
-        nft = ERC721(_nft);
-        nftId = _nftId;
     }
     
-    function bid() public payable returns (bool)
+    function bid(uint price) public payable returns (bool)
     { 
-        require(msg.value > highestBid, "can't bid, Make a higher Bid");
+        require(price > highestBid, "can't bid, Make a higher Bid");
         require(block.timestamp < expiresAt, "Auction has expired");
         highestBidder = msg.sender; 
-        highestBid = msg.value;
+        highestBid = price;
         return true;
     }
 
-    function transferFrom() external payable {
+    function transferFrom() public payable {
         require(msg.sender == highestBidder);
         require(block.timestamp > expiresAt);
         
-        nft.transferFrom(seller, msg.sender, nftId);
-        seller.transfer(msg.value);
+        nft.safeTransferFrom(address(this), highestBidder, nftId);
+        //seller.transfer(price);
+    }
+    
+    function testTransfer() public payable {
+        nft.safeTransferFrom(address(this), highestBidder, nftId);
+        // seller.transfer(price);
+    }
+    
+    function configureNFT(address _nft, uint _nftId) public
+    {
+        nft = ERC721(_nft);
+        nftId = _nftId;
     }
 }
