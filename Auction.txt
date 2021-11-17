@@ -16,11 +16,11 @@ contract Auction {
     uint public highestBid;
     address public highestBidder;
 
-    constructor(uint _startingPrice) {
+    constructor(uint _startingPrice, uint duration) {
         seller = payable(msg.sender);
         startingPrice = _startingPrice;
         startAt = block.timestamp;
-        expiresAt = block.timestamp + 7 days;
+        expiresAt = block.timestamp + (duration * 1 days);
     }
     
     function bid(uint price) public payable returns (bool)
@@ -37,12 +37,10 @@ contract Auction {
         require(block.timestamp > expiresAt);
         
         nft.safeTransferFrom(address(this), highestBidder, nftId);
-        //seller.transfer(price);
     }
     
     function testTransfer() public payable {
-        nft.safeTransferFrom(address(this), highestBidder, nftId);
-        // seller.transfer(price);
+        nft.safeTransferFrom(address(this), msg.sender, nftId);
     }
     
     function configureNFT(address _nft, uint _nftId) public
