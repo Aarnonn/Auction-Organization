@@ -15,6 +15,9 @@ contract Auction {
     uint public expiresAt;
     uint public highestBid;
     address public highestBidder;
+    mapping(address => uint) public addressBook;
+    
+    event Bid(address addy, uint price, bool worked);
 
     constructor(uint _startingPrice, uint duration) {
         seller = payable(msg.sender);
@@ -27,8 +30,12 @@ contract Auction {
     { 
         require(price > highestBid, "can't bid, Make a higher Bid");
         require(block.timestamp < expiresAt, "Auction has expired");
-        highestBidder = msg.sender; 
+        uint timeSince = block.timestamp-addressBook[msg.sender];
+        require(timeSince > 2, "One bid every two minutes");
+        addressBook[msg.sender] = block.timestamp;
+        highestBidder = msg.sender;
         highestBid = price;
+        emit Bid(msg.sender, price, true);
         return true;
     }
 
